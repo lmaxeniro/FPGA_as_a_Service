@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: triden-core-pod
+  # namespace:
+spec:
+  containers:
+    - name: triden-core-0p1
+      image: ecdsa-fpga-pod:0.1 
+      resources:
+        limits:
+          xilinx.com/fpga-xilinx_aws-vu9p-f1_dynamic_5_0-43981: 1
+      command: ["/bin/sh"]
+      args: ["-c", "while true; do echo triden-core ready for test; sleep 20; done"]

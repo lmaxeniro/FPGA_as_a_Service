@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accelator-pod
+spec:
+  selector:
+    matchLabels:
+      app: accelator-pod
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: accelator-pod
+    spec:
+      containers:
+      - name: accelator-pod
+        image: server-pod:0.1
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            xilinx.com/fpga-xilinx_aws-vu9p-f1_dynamic_5_0-43981: 1
+        ports:
+        - name: server
+          containerPort: 8010
+        command: ["/opt/xilinx/k8s/server/run.sh"]
+      dnsPolicy: ClusterFirst
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fpga-server-svc
+spec:
+  selector:
+    app: accelator-pod
+  clusterIP: 10.96.59.3
+  ports:
+  - name: server
+    protocol: TCP
+    port: 8010
+  type: NodePort
+  externalTrafficPolicy: Local
